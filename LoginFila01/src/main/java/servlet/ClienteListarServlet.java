@@ -30,7 +30,7 @@ public class ClienteListarServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        emf = Persistence.createEntityManagerFactory("com.mycompany_LoginFila01_war_1.0-SNAPSHOTPU");
+        emf = Persistence.createEntityManagerFactory("com.mycompany_Cripto06_war_1.0-SNAPSHOTPU");
     }
 
     @Override
@@ -38,10 +38,15 @@ public class ClienteListarServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String token = request.getParameter("token");
-        boolean b = util.JwtUtil.validarToken(token);
+        String tokeng = request.getParameter("tokeng");
+
+        boolean b = token != null && util.JwtUtil.validarToken(token);
+        boolean a = tokeng != null && util.JwtGoogle.verifyToken(tokeng);
+
         EntityManager em = emf.createEntityManager();
 
-        if (b) {
+        if (a || b) {
+
             List<Cliente> clientes = em.createNamedQuery("Cliente.findAll", Cliente.class).getResultList();
             JSONArray jsonArray = new JSONArray();
             for (Cliente c : clientes) {

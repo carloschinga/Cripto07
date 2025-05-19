@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Clientes</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Listado de Clientes</h1>
+    <table id="tablaClientes">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Nombre</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            const token = localStorage.getItem("tokeng");
+            console.log("Token recuperado en clientes.html:", token);
+            if (!token) {
+                alert("No se encontró el token de sesión. Por favor inicia sesión nuevamente.");
+                window.location.href = "index.html";
+                return;
+            }
+
+            fetch("clientes?tokeng=" + encodeURIComponent(token))
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error al obtener los clientes");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.resultado === "error") {
+                        alert("Token inválido o expirado");
+                        return;
+                    }
+
+                    const tbody = document.querySelector("#tablaClientes tbody");
+                    tbody.innerHTML = "";
+                    data.forEach(cliente => {
+                        const fila = document.createElement("tr");
+                        fila.innerHTML = `
+                            <td>${cliente.codiClie}</td>
+                            <td>${cliente.appaClie}</td>
+                            <td>${cliente.apmaClie}</td>
+                            <td>${cliente.nombClie}</td>
+                        `;
+                        tbody.appendChild(fila);
+                    });
+
+                    // (Opcional) Borra el token del almacenamiento para mayor seguridad
+                    // localStorage.removeItem("tokeng");
+                })
+                .catch(error => {
+                    console.error("Error al cargar clientes:", error);
+                });
+        });
+        
+    </script>
+</body>
+</html>
