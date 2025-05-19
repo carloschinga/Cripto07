@@ -41,7 +41,7 @@ public class LogueoUsuario extends HttpServlet {
             String pass = request.getParameter("pass");
 
             
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_Cripto06_war_1.0-SNAPSHOTPU");
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_LoginFila01_war_1.0-SNAPSHOTPU");
             UsuarioJpaController usuDAO = new UsuarioJpaController(emf);
 
             

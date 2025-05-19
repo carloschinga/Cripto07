@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+
+        <style>
+            body {
+                background: linear-gradient(135deg, #f9f7ff, #e4e1f5);
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+            form {
+                background-color: #ffffffcc;
+                padding: 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                min-width: 300px;
+                max-width: 350px;
+            }
+            h2 {
+                margin-bottom: 1.5rem;
+                color: #6a4fbf;
+                font-weight: 600;
+            }
+            label {
+                display: block;
+                margin-top: 1rem;
+                font-size: 0.9rem;
+                color: #555;
+            }
+            input[type="text"], input[type="password"] {
+                width: 100%;
+                padding: 0.6rem;
+                margin-top: 0.3rem;
+                border: 1px solid #ccc;
+                border-radius: 0.6rem;
+                background-color: #f9f9fc;
+                transition: all 0.3s ease;
+                font-size: 0.95rem;
+            }
+            input:focus {
+                outline: none;
+                border-color: #b29eff;
+                box-shadow: 0 0 0 2px #e1d8ff;
+            }
+            button {
+                margin-top: 1.5rem;
+                padding: 0.7rem 2rem;
+                background-color: #a689e1;
+                color: white;
+                border: none;
+                border-radius: 2rem;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: background-color 0.3s ease;
+            }
+            button:hover {
+                background-color: #916edc;
+            }
+            .g_id_signin {
+                margin-top: 1rem;
+                display: flex;
+                justify-content: center;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <form onsubmit="return false;">
+            <h2>INICIO DE SESIÓN 👤</h2>
+            <label>Ingrese usuario: </label><br/>
+            <input type="text" id="user"><br>
+            <label>Ingrese contraseña: </label><br/>
+            <input type="password" id="pass"><br/>
+            <button id="btnIniciar">Iniciar</button>
+            
+            <div class="g_id_signin" data-type="standard"></div>
+        </form>
+        
+        <!-- LOGUEO CON GOOGLE - COLOCAR ID GENERADO-->
+        <div id="g_id_onload"
+             data-client_id="683576227359-a17m87huqbg468fu1tlknkcnru125fl6.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+      
+        <script>
+            let btnIniciar = document.getElementById("btnIniciar");
+            btnIniciar.addEventListener("click", function () {
+                let user = document.getElementById("user").value;
+                let pass = document.getElementById("pass").value;
+                
+                let url = `logueousuario?user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}`;
+
+                fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.resultado === "ok") {
+                                console.log(data.token);
+                                setCookie("token", data.token, 7);
+                                window.location.href = "clientes.html";
+                            } else {
+                                alert("Usuario o contraseña incorrectos");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error al procesar la solicitud:", error);
+                        });
+            });
+
+            function handleCredentialResponse(response) {
+                const id_token = response.credential;
+
+                fetch(`logingooglesevan`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id_token})
+                })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.resultado === 'ok') {
+                                setCookie("token", data.token, 7);
+                                window.location.href = "clientes.html";
+                            } else {
+                                alert('Error en login con Google');
+                            }
+                        })
+                        .catch(err => console.error(err));
+            }
+            
+            function setCookie(nombre, valor, dias) {
+                const fecha = new Date();
+                fecha.setTime(fecha.getTime() + (dias * 24 * 60 * 60 * 1000));
+                const expira = "expires=" + fecha.toUTCString();
+                document.cookie = nombre + "=" + valor + ";" + expira + ";path=/";
+            }
+        </script>
+    </body>
+</html>
