@@ -11,7 +11,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <script src="https://accounts.google.com/gsi/client" async defer></script>
     </head>
     <body>
-        <div>TODO write content</div>
+       
         <form onsubmit="return false;">
             <h2>INICIO DE SESIÓN 🌍</h2>
             <label>Ingrese usuario: </label><br/>
@@ -20,6 +20,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <input type="password" id="pass"><br/>
             <button id="btnIniciar">Iniciar</button>
         </form>
+        <h2>INICIO DE SESIÓN EN GOOGLE</h2>
         <!-- pal logueo -->
         <div id="g_id_onload"
              data-client_id="863366170525-qv9nt0tdcbq9u9ahkibocb0balgst92b.apps.googleusercontent.com"
@@ -29,6 +30,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
 
         <div class="g_id_signin" data-type="standard"></div>
 
+        
         <script>
             let btnIniciar = document.getElementById("btnIniciar");
             btnIniciar.addEventListener("click", function () {
