@@ -30,7 +30,7 @@ public class ClienteListarServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        emf = Persistence.createEntityManagerFactory("com.mycompany_Cripto06_war_1.0-SNAPSHOTPU");
+        emf = Persistence.createEntityManagerFactory("com.mycompany_LoginFila01_war_1.0-SNAPSHOTPU");
     }
 
     @Override
