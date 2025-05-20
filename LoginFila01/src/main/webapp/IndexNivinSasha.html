@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <!-- 🎨 ESTILOS SOLO MORADOS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #d0bfff, #a084ca);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #6c4ab6;
+        }
+
+        label {
+            font-weight: bold;
+            color: #2e2e2e;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #c5aefc;
+            border-radius: 10px;
+            background-color: #f2e6ff;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            background-color: #6c4ab6;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #5a3ea4;
+        }
+
+        .g_id_signin {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🧾 FORMULARIO DE INICIO DE SESIÓN -->
+    <form onsubmit="return false;">
+        <h2>INICIO DE SESIÓN 🌍</h2>
+
+        <label for="user">Ingrese usuario:</label>
+        <input type="text" id="user">
+
+        <label for="pass">Ingrese contraseña:</label>
+        <input type="password" id="pass">
+
+        <button id="btnIniciar">Iniciar</button>
+
+        <!-- 🔐 LOGIN CON GOOGLE -->
+        <div id="g_id_onload"
+             data-client_id="412482055014-9faidlut2rl29s6vaf5amqfkq36jpnv3.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+
+        <div class="g_id_signin" data-type="standard"></div>
+    </form>
+
+    <!-- 🧠 SCRIPT PARA EL LOGIN NORMAL Y GOOGLE -->
+    <script>
+        // 🎯 BOTÓN "INICIAR"
+        let btnIniciar = document.getElementById("btnIniciar");
+        btnIniciar.addEventListener("click", function () {
+            let user = document.getElementById("user").value;
+            let pass = document.getElementById("pass").value;
+
+            let url = `logueousuario?user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.resultado === "ok") {
+                        setCookie("token", data.token, 7);
+                        window.location.href = "clientes.html";
+                    } else {
+                        alert("Usuario o contraseña incorrectos");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al procesar la solicitud:", error);
+                });
+        });
+
+        // 🔐 LOGIN CON GOOGLE
+        function handleCredentialResponse(response) {
+            const id_token = response.credential;
+
+            fetch(`logueogooglenivinsasha`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id_token})
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.resultado === 'ok') {
+                        setCookie("token", data.token, 7);
+                        window.location.href = "clientes.html";
+                    } else {
+                        alert('Error en login con Google');
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+
+        // 🍪 CREAR COOKIE
+        function setCookie(nombre, valor, dias) {
+            const fecha = new Date();
+            fecha.setTime(fecha.getTime() + (dias * 24 * 60 * 60 * 1000));
+            const expira = "expires=" + fecha.toUTCString();
+            document.cookie = nombre + "=" + valor + ";" + expira + ";path=/";
+        }
+    </script>
+</body>
+</html>
